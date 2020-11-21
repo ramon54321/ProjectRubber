@@ -2,12 +2,13 @@ import { Input } from './Input'
 import { Output } from './Output'
 import { NetClient } from '../shared/NetClient'
 import { LocalState } from './types'
-import { PlayerAction } from '../shared/types'
+import { PlayerAction, ServerMessage } from '../shared/types'
 import { NetState } from '../shared/NetState'
 
 export class HumanClient extends NetClient {
   constructor(netState: NetState, isSharedState: boolean) {
-    super((message) => {
+    super()
+    this.on('message', (message: ServerMessage) => {
       if (message.kind === 'Info') {
         console.log('CLIENT: Server info -', message.info)
       } else if (message.kind === 'LogicAction' && !isSharedState) {
@@ -19,7 +20,7 @@ export class HumanClient extends NetClient {
     
       }
     }
-    const input = new Input(localState, (playerAction: PlayerAction) => this.sendPlayerAction(playerAction))
+    const input = new Input(localState, (playerAction: PlayerAction) => this.sendPlayerAction(playerAction), () => this.sendJoin())
     const output = new Output(netState, localState)
   }
 }

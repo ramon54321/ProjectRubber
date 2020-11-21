@@ -1,14 +1,13 @@
 import * as WebSocket from 'websocket'
+import { EventEmitter } from 'events'
 import { ServerMessage, ClientMessage, PlayerAction } from './types'
 
-export class NetClient {
+export class NetClient extends EventEmitter {
   private _socket: any
   private _connection: any
 
-  private _onMessage: (message: ServerMessage) => void
-
-  constructor(onMessage: (message: ServerMessage) => void) {
-    this._onMessage = onMessage
+  constructor() {
+    super()
 
     // Connect to Server
     this._socket = new WebSocket.client()
@@ -17,9 +16,10 @@ export class NetClient {
     // Listen for ServerMessages
     this._socket.on('connect', (connection) => {
       this._connection = connection
-      this._connection.on('message', (message) =>
-        this._onMessage(JSON.parse(message.utf8Data)),
+      this._connection.on('message', (message) => 
+        this.emit('message', JSON.parse(message.utf8Data) as ServerMessage)
       )
+      this.emit('connect', (connection) => this.emit('connect', connection))
     })
   }
 
@@ -37,6 +37,7 @@ export class NetClient {
   }
 
   private sendMessage(message: ClientMessage) {
+    if (!this._connection) throw new Error('NET_ERROR: Trying to send message to server without a connection')
     this._connection.sendUTF(JSON.stringify(message))
   }
 }

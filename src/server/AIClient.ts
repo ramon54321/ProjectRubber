@@ -1,9 +1,11 @@
 import { NetClient } from '../shared/NetClient'
 import { NetState } from '../shared/NetState'
+import { ServerMessage } from '../shared/types'
 
 export class AIClient extends NetClient {
   constructor(netState: NetState, isReadOnlyState: boolean) {
-    super((message) => {
+    super()
+    this.on('message', (message: ServerMessage) => {
       if (message.kind === 'LogicAction' && !isReadOnlyState) {
         netState.apply(message.action)
       }

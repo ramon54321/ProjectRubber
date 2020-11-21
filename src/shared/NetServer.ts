@@ -1,13 +1,13 @@
 import * as WebSocket from "websocket"
 import * as http from 'http'
+import { EventEmitter } from 'events'
 import { ClientMessage, LogicAction, ServerMessage } from "../shared/types"
 
-export class NetServer {
+export class NetServer extends EventEmitter {
   private _wsServer: any
-  private _onMessage: (connection: any, message: ClientMessage) => void
 
-  constructor(onMessage: (connection: any, message: ClientMessage) => void) {
-    this._onMessage = onMessage
+  constructor() {
+    super()
 
     // Listen for Clients
     const server = http.createServer()
@@ -20,7 +20,12 @@ export class NetServer {
     // Listen for ClientMessages
     this._wsServer.on('connect', connection => {
       console.log('SERVER: Client Connected')
-      connection.on('message', data => this._onMessage(connection, JSON.parse(data.utf8Data)))
+      connection.on('message', data => this.emit('message', connection, JSON.parse(data.utf8Data) as ClientMessage))
+    })
+
+    this._wsServer.on('disconnect', connection => {
+      console.log('SERVER: Client Disconnected', connection)
+      this.emit('disconnect', connection)
     })
   }
 
