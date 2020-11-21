@@ -1,6 +1,6 @@
 import { NetClient } from '../shared/NetClient'
 import { NetState } from '../shared/NetState'
-import { ServerMessage } from '../shared/types'
+import { ServerMessage } from '../shared/types.general'
 
 export class AIClient extends NetClient {
   constructor(netState: NetState, isReadOnlyState: boolean) {

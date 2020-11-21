@@ -2,24 +2,22 @@ import { NetState } from '../shared/NetState'
 import { NetServer } from '../shared/NetServer'
 import { LogicEngine } from './LogicEngine'
 import { AIClient } from './AIClient'
-import { PlayerAction, ClientMessage } from '../shared/types'
+import { PlayerAction, ClientMessage } from '../shared/types.general'
 import { Queue } from 'essential-data-structures'
 
 export function createServer(netState: NetState) {
   console.log('Creating Server')
   const playerActions = new Queue<PlayerAction>()
-  
+
   const netServer = new NetServer()
   netServer.on('message', (connection, message: ClientMessage) => {
-    if (message.kind === 'Join') {
-      console.log('Player Joined')
-    } else if (message.kind === 'PlayerAction') {
+    if (message.kind === 'PlayerAction') {
       playerActions.enqueue(message.action)
     }
   })
-  
+
   const logicEngine = new LogicEngine()
-  
+
   function step() {
     const logicActions = logicEngine.step(netState, playerActions)
     logicActions.dequeueEach((logicAction) => {
@@ -38,9 +36,7 @@ export function createServer(netState: NetState) {
 export function createAIClient(netState: NetState) {
   console.log('Creating AI Client')
   const aiClient = new AIClient(netState, true)
-  aiClient.on('connect', (connection) => aiClient.sendJoin()) 
+  aiClient.on('connect', (connection) =>
+    aiClient.sendPlayerAction({ kind: 'Join', name: 'AI Player' }),
+  )
 }
-
-
-
-

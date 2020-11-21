@@ -2,7 +2,7 @@ import { Input } from './Input'
 import { Output } from './Output'
 import { NetClient } from '../shared/NetClient'
 import { LocalState } from './types'
-import { PlayerAction, ServerMessage } from '../shared/types'
+import { PlayerAction, ServerMessage } from '../shared/types.general'
 import { NetState } from '../shared/NetState'
 
 export class HumanClient extends NetClient {
@@ -20,7 +20,7 @@ export class HumanClient extends NetClient {
     
       }
     }
-    const input = new Input(localState, (playerAction: PlayerAction) => this.sendPlayerAction(playerAction), () => this.sendJoin())
+    const input = new Input(localState, (playerAction: PlayerAction) => this.sendPlayerAction(playerAction))
     const output = new Output(netState, localState)
   }
 }

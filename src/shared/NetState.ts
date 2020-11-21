@@ -1,10 +1,13 @@
-import { LogicAction, SystemSide } from './types'
+import { LogicAction, SystemSide } from './types.general'
+import { Player } from './types.NetState'
+import { IndexedMap } from 'essential-data-structures'
 
 export class NetState {
   private _systemSide
-  private _state = {
+  state = {
     logicActionHistory: [],
     logicSteps: 0,
+    players: new IndexedMap<Player>(['name']),
   }
   constructor(systemSide: SystemSide) {
     this._systemSide = systemSide
@@ -12,11 +15,18 @@ export class NetState {
   }
   apply(logicAction: LogicAction) {
     console.log(this._systemSide, 'NETSTATE: Applying', logicAction.kind)
-    this._state.logicActionHistory.push(logicAction)
+    this.state.logicActionHistory.push(logicAction)
+
     if (logicAction.kind === 'Step') {
-      this._state.logicSteps++
+      this.state.logicSteps++
+    } else if (logicAction.kind === 'Join') {
+      this.state.players.add({ name: logicAction.name })
     } else {
-      console.log(this._systemSide, 'NETSTATE: Unknown LogicAction', logicAction.kind)
+      console.log(
+        this._systemSide,
+        'NETSTATE: Unknown LogicAction',
+        logicAction.kind,
+      )
     }
   }
 }

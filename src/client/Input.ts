@@ -1,21 +1,21 @@
 import { LocalState } from './types'
-import { PlayerAction, ClientMessage } from '../shared/types'
+import { PlayerAction } from '../shared/types.general'
 
 export class Input {
   private _sendPlayerAction: (playerAction: PlayerAction) => void
-  private _sendJoin: () => void
   private _input: HTMLElement
 
   constructor(
     localState: LocalState,
     sendPlayerAction: (playerAction: PlayerAction) => void,
-    sendJoin: () => void,
   ) {
     this._sendPlayerAction = sendPlayerAction
-    this._sendJoin = sendJoin
     this._input = document.getElementById('input')
 
-    this.createButtonJoin()
+    this.createButtonPlayerAction('Join', {
+      kind: 'Join',
+      name: 'Human Player',
+    })
     this.createButtonPlayerAction('Spawn', {
       kind: 'Spawn',
       entityKind: 'Infantry',
@@ -45,13 +45,6 @@ export class Input {
     const button = document.createElement('button')
     button.textContent = text
     button.onclick = () => this._sendPlayerAction(onClickPlayerAction)
-    this._input.appendChild(button)
-  }
-
-  createButtonJoin() {
-    const button = document.createElement('button')
-    button.textContent = 'Join Game'
-    button.onclick = this._sendJoin
     this._input.appendChild(button)
   }
 }

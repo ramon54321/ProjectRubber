@@ -1,7 +1,7 @@
 import * as WebSocket from "websocket"
 import * as http from 'http'
 import { EventEmitter } from 'events'
-import { ClientMessage, LogicAction, ServerMessage } from "../shared/types"
+import { ClientMessage, LogicAction, ServerMessage } from "./types.general"
 
 export class NetServer extends EventEmitter {
   private _wsServer: any
@@ -30,13 +30,13 @@ export class NetServer extends EventEmitter {
   }
 
   broadcastLogicAction(logicAction: LogicAction) {
-    this.broadcastMessage({
+    this.broadcastServerMessage({
       kind: 'LogicAction',
       action: logicAction
     })
   }
 
-  private broadcastMessage(serverMessage: ServerMessage) {
+  broadcastServerMessage(serverMessage: ServerMessage) {
     this._wsServer.broadcast(JSON.stringify(serverMessage))
   }
 }

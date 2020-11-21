@@ -1,6 +1,6 @@
 import * as WebSocket from 'websocket'
 import { EventEmitter } from 'events'
-import { ServerMessage, ClientMessage, PlayerAction } from './types'
+import { ServerMessage, ClientMessage, PlayerAction } from './types.general'
 
 export class NetClient extends EventEmitter {
   private _socket: any
@@ -27,12 +27,6 @@ export class NetClient extends EventEmitter {
     this.sendMessage({
       kind: 'PlayerAction',
       action: playerAction,
-    })
-  }
-
-  sendJoin() {
-    this.sendMessage({
-      kind: 'Join',
     })
   }
 

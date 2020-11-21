@@ -1,6 +1,7 @@
-import { PlayerAction, LogicAction } from '../shared/types'
+import { PlayerAction, LogicAction } from '../shared/types.general'
 import { Queue } from 'essential-data-structures'
 import { NetState } from '../shared/NetState'
+import * as PlayerActionHandlers from './PlayerActionHandlers'
 
 export class LogicEngine {
   step(
@@ -9,16 +10,16 @@ export class LogicEngine {
   ): Queue<LogicAction> {
     const logicActions = new Queue<LogicAction>()
     logicActions.enqueue({ kind: 'Step' })
-
+    
     playerActions.dequeueEach((playerAction) => {
-      if (playerAction.kind === 'Spawn') {
-        logicActions.enqueue({
-          kind: 'Spawn',
-          entityKind: playerAction.entityKind,
-          position: playerAction.position,
-        })
+      const playerActionHandler = PlayerActionHandlers[playerAction.kind]
+      if (playerActionHandler !== undefined) {
+        playerActionHandler(netState, logicActions, playerAction)
       } else {
-        console.log('SERVER: LogicEngine: Unknown PlayerAction', playerAction.kind)
+        console.log(
+          'SERVER: LogicEngine: Unknown PlayerAction',
+          playerAction.kind,
+        )
       }
     })
 

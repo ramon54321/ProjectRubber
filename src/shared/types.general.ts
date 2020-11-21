@@ -7,7 +7,11 @@ export type EntityKind = 'Infantry' | 'Scout'
 
 export type SystemSide = 'Client' | 'Server' | 'Shared'
 
-export type PlayerAction = PA_Spawn | PA_Move
+export type PlayerAction = PA_Join | PA_Spawn | PA_Move
+export interface PA_Join {
+  kind: 'Join'
+  name: string
+}
 export interface PA_Spawn {
   kind: 'Spawn'
   entityKind: EntityKind
@@ -19,9 +23,13 @@ export interface PA_Move {
   destination: Vec2
 }
 
-export type LogicAction = LA_Step | LA_Spawn | LA_Move
+export type LogicAction = LA_Step | LA_Join | LA_Spawn | LA_Move
 export interface LA_Step {
   kind: 'Step'
+}
+export interface LA_Join {
+  kind: 'Join'
+  name: string
 }
 export interface LA_Spawn {
   kind: 'Spawn'
@@ -44,16 +52,8 @@ export interface SM_LogicAction {
   action: LogicAction
 }
 
-export type ClientMessage = CM_Join | CM_PlayerAction
-export interface CM_Join {
-  kind: 'Join'
-}
+export type ClientMessage = CM_PlayerAction
 export interface CM_PlayerAction {
   kind: 'PlayerAction'
   action: PlayerAction
-}
-
-export interface Player {
-  connection: any
-  teamId: number
 }
