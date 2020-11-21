@@ -3,6 +3,7 @@ import { PlayerAction } from '../shared/types.general'
 
 export class Input {
   private _sendPlayerAction: (playerAction: PlayerAction) => void
+  private _humanClientRootElement: HTMLElement
   private _input: HTMLElement
 
   constructor(
@@ -10,8 +11,12 @@ export class Input {
     sendPlayerAction: (playerAction: PlayerAction) => void,
   ) {
     this._sendPlayerAction = sendPlayerAction
-    this._input = document.getElementById('input')
-
+    this._humanClientRootElement = document.getElementById('human-client-root')
+    
+    this._input = document.createElement('div')
+    this._input.setAttribute('id', 'input')
+    this._humanClientRootElement.appendChild(this._input)
+    
     this.createButtonPlayerAction('Join', {
       kind: 'Join',
       name: 'Human Player',

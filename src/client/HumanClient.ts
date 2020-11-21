@@ -1,5 +1,6 @@
 import { Input } from './Input'
-import { Output } from './Output'
+import { TextOutput } from './TextOutput'
+import { BasicOutput } from './BasicOutput'
 import { NetClient } from '../shared/NetClient'
 import { LocalState } from './types'
 import { PlayerAction, ServerMessage } from '../shared/types.general'
@@ -21,6 +22,6 @@ export class HumanClient extends NetClient {
       }
     }
     const input = new Input(localState, (playerAction: PlayerAction) => this.sendPlayerAction(playerAction))
-    const output = new Output(netState, localState)
+    const output = new BasicOutput(netState, localState)
   }
 }
